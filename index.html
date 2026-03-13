@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0c0c0c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="حلاقي">
+<title>حلاقي — Salon de Coiffure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Playfair+Display:wght@700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root {
+  --bg: #0c0c0c;
+  --bg2: #111;
+  --surface: #181818;
+  --surface2: #222;
+  --border: #2e2e2e;
+  --text: #f2ede6;
+  --text2: #888;
+  --text3: #444;
+  --gold: #c9a84c;
+  --gold2: #e8cc8a;
+  --gold3: #7a5c1e;
+  --green: #52c97a;
+  --red: #e05c5c;
+  --orange: #e8943a;
+  --blue: #5aade8;
+  --radius: 18px;
+  --radius-sm: 12px;
+  --shadow: 0 8px 32px rgba(0,0,0,.5);
+  --font: 'Cairo', sans-serif;
+}
+.light {
+  --bg: #f7f4ef;
+  --bg2: #ece8e0;
+  --surface: #ffffff;
+  --surface2: #f0ece4;
+  --border: #ddd8ce;
+  --text: #1a1510;
+  --text2: #7a6e5e;
+  --text3: #bbb;
+  --shadow: 0 4px 20px rgba(0,0,0,.08);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100dvh;
+  transition: background .3s, color .3s;
+  overflow-x: hidden;
+}
+#app { max-width: 440px; margin: 0 auto; min-height: 100dvh; position: relative; }
+
+/* LOGO */
+.logo-mark { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+.logo-svg { width: 42px; height: 42px; flex-shrink: 0; }
+.logo-text-wrap { display: flex; flex-direction: column; line-height: 1; }
+.logo-main {
+  font-family: 'Cairo', sans-serif; font-weight: 900; font-size: 22px;
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  letter-spacing: 1px;
+}
+.logo-sub { font-size: 9px; color: var(--text2); letter-spacing: 2px; text-transform: uppercase; margin-top: 1px; }
+
+/* NAV */
+.nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px; position: sticky; top: 0; z-index: 100;
+  background: rgba(12,12,12,.92); backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+.light .nav { background: rgba(247,244,239,.92); }
+.nav-actions { display: flex; gap: 8px; align-items: center; }
+
+/* LANG SWITCH */
+.lang-btn {
+  display: flex; align-items: center; background: var(--surface2);
+  border: 1px solid var(--border); border-radius: 20px; overflow: hidden; padding: 3px;
+}
+.lang-opt {
+  padding: 4px 10px; border-radius: 16px; font-size: 11px; font-weight: 700;
+  cursor: pointer; transition: all .2s; color: var(--text2);
+  border: none; background: none; font-family: var(--font);
+}
+.lang-opt.active { background: var(--gold); color: #0c0c0c; }
+
+.icon-btn {
+  width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; transition: all .2s;
+}
+.icon-btn:active { transform: scale(.9); }
+
+/* SCREENS */
+.screen { display: none; padding: 18px 18px 110px; animation: fadeUp .3s ease; }
+.screen.active { display: block; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+/* BOTTOM NAV */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 440px;
+  background: var(--surface); border-top: 1px solid var(--border);
+  display: flex; z-index: 100; padding-bottom: env(safe-area-inset-bottom);
+}
+.bnav-item {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  padding: 10px 4px 12px; cursor: pointer; transition: all .2s;
+  border: none; background: none; color: var(--text3);
+  font-family: var(--font); font-size: 10px; gap: 4px;
+}
+.bnav-item .bicon { font-size: 22px; }
+.bnav-item.active { color: var(--gold); }
+.bnav-item:active { transform: scale(.88); }
+
+/* HERO */
+.hero-banner {
+  border-radius: 22px; margin-bottom: 18px; overflow: hidden; position: relative;
+  background: linear-gradient(145deg, #1a130a 0%, #2a1f0e 50%, #1a130a 100%);
+  border: 1px solid var(--gold3);
+}
+.hero-banner::before {
+  content:''; position:absolute; inset:0;
+  background: radial-gradient(ellipse at 30% 50%, rgba(201,168,76,.15) 0%, transparent 70%);
+}
+.hero-inner { padding: 24px 22px; position: relative; z-index: 1; }
+.hero-tag { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+.hero-tag::before { content:''; width:24px; height:1px; background:var(--gold); }
+.hero-stats { display: flex; gap: 16px; margin-top: 16px; }
+.hero-stat { flex:1; }
+.hero-stat-num { font-family:'Playfair Display',serif; font-size:36px; color:var(--gold); line-height:1; }
+.hero-stat-lbl { font-size:10px; color:var(--text2); margin-top:3px; text-transform:uppercase; letter-spacing:.8px; }
+.hero-divider { width:1px; background:var(--border); margin:4px 0; }
+
+/* TICKET */
+.ticket-wrap {
+  background: linear-gradient(160deg, #1e1508 0%, #2d1e0a 100%);
+  border: 1px solid var(--gold3); border-radius: 22px;
+  overflow: hidden; margin-bottom: 16px; position: relative;
+}
+.ticket-wrap::after {
+  content:''; position:absolute; left:-1px; right:-1px; top:60%;
+  height:1px;
+  background: repeating-linear-gradient(90deg,var(--border) 0,var(--border) 6px,transparent 6px,transparent 12px);
+}
+.ticket-top { padding:28px 24px 22px; text-align:center; }
+.ticket-shop { font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--gold); margin-bottom:18px; }
+.ticket-num { font-family:'Playfair Display',serif; font-size:100px; line-height:1; color:var(--gold); }
+.ticket-num-lbl { font-size:11px; color:var(--text2); letter-spacing:1.5px; text-transform:uppercase; margin-top:4px; }
+.ticket-name { font-size:20px; font-weight:700; color:var(--text); margin-top:12px; }
+.ticket-svc {
+  display:inline-flex; align-items:center; gap:6px;
+  background:rgba(201,168,76,.1); border:1px solid rgba(201,168,76,.3);
+  border-radius:20px; padding:6px 14px; font-size:13px; color:var(--gold); margin-top:10px;
+}
+.ticket-bottom { padding:22px 24px 26px; display:grid; grid-template-columns:1fr 1px 1fr; }
+.ticket-info { text-align:center; }
+.ticket-info-num { font-family:'Playfair Display',serif; font-size:38px; color:var(--text); line-height:1; }
+.ticket-info-lbl { font-size:10px; color:var(--text2); text-transform:uppercase; letter-spacing:1px; margin-top:4px; }
+.ticket-sep { background:var(--border); }
+
+/* CARDS */
+.card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:18px; margin-bottom:14px; box-shadow:var(--shadow); }
+.card-sm { padding:12px 16px; }
+
+/* FORM */
+.form-group { margin-bottom:15px; }
+.form-label { font-size:11px; color:var(--text2); margin-bottom:6px; display:block; text-transform:uppercase; letter-spacing:.8px; font-weight:600; }
+.form-input {
+  width:100%; padding:14px 16px; background:var(--surface2);
+  border:1.5px solid var(--border); border-radius:var(--radius-sm);
+  color:var(--text); font-family:var(--font); font-size:16px; outline:none; transition:border-color .2s;
+}
+.form-input:focus { border-color:var(--gold); }
+.form-input::placeholder { color:var(--text3); }
+
+/* SERVICES */
+.service-grid { display:flex; flex-direction:column; gap:10px; }
+.service-option {
+  display:flex; align-items:center; gap:14px; padding:14px 16px;
+  border-radius:var(--radius-sm); border:2px solid var(--border);
+  background:var(--surface2); cursor:pointer; transition:all .2s;
+  position:relative; overflow:hidden;
+}
+.service-option::before {
+  content:''; position:absolute; left:0; top:0; bottom:0;
+  width:3px; background:var(--gold); transform:scaleY(0); transition:transform .2s;
+}
+.service-option.selected { border-color:var(--gold); background:rgba(201,168,76,.06); }
+.service-option.selected::before { transform:scaleY(1); }
+.service-option:active { transform:scale(.98); }
+.svc-icon { font-size:26px; flex-shrink:0; }
+.svc-body { flex:1; }
+.svc-name { font-weight:700; font-size:15px; }
+.svc-dur { font-size:12px; color:var(--text2); margin-top:2px; }
+.svc-check {
+  width:24px; height:24px; border-radius:50%; border:2px solid var(--border);
+  display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; transition:all .2s;
+}
+.service-option.selected .svc-check { background:var(--gold); border-color:var(--gold); color:#0c0c0c; }
+
+/* BUTTONS */
+.btn { width:100%; padding:15px 20px; border-radius:var(--radius-sm); border:none; font-family:var(--font); font-size:16px; font-weight:700; cursor:pointer; transition:all .2s; }
+.btn:active { transform:scale(.97); }
+.btn-primary { background:linear-gradient(135deg,var(--gold),var(--gold2)); color:#0c0c0c; box-shadow:0 4px 20px rgba(201,168,76,.3); }
+.btn-outline { background:transparent; color:var(--text); border:1.5px solid var(--border); }
+.btn-danger { background:rgba(224,92,92,.1); color:var(--red); border:1.5px solid rgba(224,92,92,.3); }
+.btn-sm { padding:9px 16px; font-size:13px; width:auto; }
+
+/* SECTION TITLE */
+.section-title { font-size:13px; font-weight:700; color:var(--text2); text-transform:uppercase; letter-spacing:2px; margin-bottom:14px; display:flex; align-items:center; gap:10px; }
+.section-title::after { content:''; flex:1; height:1px; background:var(--border); }
+
+/* BADGES */
+.badge { display:inline-flex; align-items:center; gap:5px; padding:5px 11px; border-radius:20px; font-size:11px; font-weight:600; }
+.badge-green { background:rgba(82,201,122,.12); color:var(--green); }
+.badge-orange { background:rgba(232,148,58,.12); color:var(--orange); }
+.badge-red { background:rgba(224,92,92,.12); color:var(--red); }
+.badge-gold { background:rgba(201,168,76,.12); color:var(--gold); }
+.badge-blue { background:rgba(90,173,232,.12); color:var(--blue); }
+.dot { width:6px; height:6px; border-radius:50%; background:currentColor; animation:blink 2s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+/* QUEUE */
+.q-item { display:flex; align-items:center; gap:14px; padding:13px 0; border-bottom:1px solid var(--border); }
+.q-item:last-child { border-bottom:none; }
+.q-pos { font-family:'Playfair Display',serif; font-size:28px; color:var(--gold); width:36px; text-align:center; flex-shrink:0; }
+.q-info { flex:1; min-width:0; }
+.q-name { font-weight:700; font-size:15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.q-svc { font-size:12px; color:var(--text2); margin-top:2px; }
+.q-actions { display:flex; gap:6px; }
+.qbtn { width:32px; height:32px; border-radius:8px; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:15px; transition:all .2s; }
+.qbtn:active { transform:scale(.85); }
+.qbtn-skip { background:rgba(232,148,58,.12); color:var(--orange); }
+.qbtn-del { background:rgba(224,92,92,.12); color:var(--red); }
+
+/* ADMIN */
+.current-box {
+  background:linear-gradient(135deg,rgba(82,201,122,.08),rgba(82,201,122,.03));
+  border:1.5px solid rgba(82,201,122,.25); border-radius:var(--radius);
+  padding:18px; margin-bottom:14px;
+}
+.current-label { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--green); margin-bottom:8px; display:flex; align-items:center; gap:6px; }
+.current-name { font-size:22px; font-weight:900; }
+.current-svc { font-size:13px; color:var(--text2); margin-top:4px; }
+
+.admin-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
+.adm-btn {
+  padding:14px 10px; border-radius:var(--radius-sm); border:1.5px solid var(--border);
+  background:var(--surface); color:var(--text); cursor:pointer; font-family:var(--font);
+  font-size:13px; font-weight:700; transition:all .2s;
+  display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center;
+}
+.adm-btn .aico { font-size:22px; }
+.adm-btn:active { transform:scale(.94); }
+.adm-green { border-color:rgba(82,201,122,.35); color:var(--green); background:rgba(82,201,122,.06); }
+.adm-orange { border-color:rgba(232,148,58,.35); color:var(--orange); background:rgba(232,148,58,.06); }
+.adm-red { border-color:rgba(224,92,92,.35); color:var(--red); background:rgba(224,92,92,.06); }
+.adm-gold { border-color:rgba(201,168,76,.35); color:var(--gold); background:rgba(201,168,76,.06); }
+
+/* PROGRESS */
+.prog-wrap { background:var(--surface2); border-radius:6px; height:6px; overflow:hidden; }
+.prog-bar { height:100%; background:linear-gradient(90deg,var(--gold),var(--gold2)); border-radius:6px; transition:width .5s ease; }
+
+/* TOGGLE */
+.toggle-row { display:flex; align-items:center; justify-content:space-between; padding:14px 0; border-bottom:1px solid var(--border); }
+.toggle-row:last-child { border-bottom:none; }
+.tog { position:relative; width:50px; height:28px; }
+.tog input { display:none; }
+.tog-track { position:absolute; inset:0; border-radius:14px; background:var(--border); cursor:pointer; transition:.3s; }
+.tog input:checked + .tog-track { background:var(--gold); }
+.tog-thumb { position:absolute; top:3px; left:3px; width:22px; height:22px; border-radius:50%; background:#fff; transition:.3s; pointer-events:none; }
+.tog input:checked ~ .tog-thumb { left:25px; }
+
+/* NUMBER */
+.num-row { display:flex; align-items:center; gap:10px; }
+.num-btn { width:32px; height:32px; border-radius:8px; border:1.5px solid var(--border); background:var(--surface2); color:var(--text); font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .2s; }
+.num-val { font-family:'DM Mono',monospace; font-size:16px; min-width:28px; text-align:center; }
+
+/* TOAST */
+.toast-wrap { position:fixed; top:68px; left:50%; transform:translateX(-50%); width:calc(100% - 28px); max-width:410px; z-index:999; display:flex; flex-direction:column; gap:8px; pointer-events:none; }
+.toast {
+  background:var(--surface); border:1px solid var(--border); border-left:4px solid var(--gold);
+  border-radius:var(--radius-sm); padding:13px 16px; box-shadow:var(--shadow); font-size:14px;
+  display:flex; align-items:center; gap:10px; font-weight:600;
+  animation:tin .3s ease; pointer-events:all;
+}
+.toast.out { animation:tout .3s ease forwards; }
+@keyframes tin { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+@keyframes tout { to{opacity:0;transform:translateY(-8px)} }
+
+/* QR */
+.qr-box { background:#fff; padding:14px; border-radius:14px; display:inline-block; }
+
+/* EMPTY */
+.empty { text-align:center; padding:44px 16px; color:var(--text2); }
+.empty .eicon { font-size:48px; margin-bottom:12px; }
+.empty h3 { font-size:18px; font-weight:700; color:var(--text); margin-bottom:6px; }
+
+/* ORNAMENT */
+.ornament { text-align:center; color:var(--gold3); font-size:18px; margin:6px 0; letter-spacing:6px; }
+
+/* MODAL */
+.overlay { position:fixed; inset:0; background:rgba(0,0,0,.75); z-index:200; display:flex; align-items:flex-end; justify-content:center; animation:fdi .2s ease; }
+.overlay.hidden { display:none; }
+@keyframes fdi { from{opacity:0} to{opacity:1} }
+.modal { background:var(--surface); border-radius:26px 26px 0 0; padding:22px 20px 44px; width:100%; max-width:440px; animation:sui .3s ease; }
+@keyframes sui { from{transform:translateY(100%)} to{transform:translateY(0)} }
+.mhandle { width:36px; height:4px; border-radius:2px; background:var(--border); margin:0 auto 20px; }
+
+@media(max-width:360px) {
+  .ticket-num { font-size:76px; }
+  .admin-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <nav class="nav">
+    <div class="logo-mark" onclick="navigateTo('home')">
+      <svg class="logo-svg" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="24" cy="24" r="22" fill="#1a130a" stroke="#c9a84c" stroke-width="1.5"/>
+        <g transform="translate(24,24)">
+          <path d="M-2,-14 L2,-14 L8,2 L2,4 Z" fill="#c9a84c" opacity=".9"/>
+          <path d="M-2,14 L2,14 L8,-2 L2,-4 Z" fill="#c9a84c" opacity=".9"/>
+          <circle cx="0" cy="0" r="3.2" fill="#e8cc8a"/>
+          <circle cx="0" cy="0" r="1.3" fill="#1a130a"/>
+          <ellipse cx="-6" cy="-10" rx="4" ry="5" stroke="#c9a84c" stroke-width="1.8" fill="none"/>
+          <ellipse cx="-6" cy="10" rx="4" ry="5" stroke="#c9a84c" stroke-width="1.8" fill="none"/>
+        </g>
+        <path d="M14,8 Q18,6 22,9 Q26,12 30,10" stroke="#e8cc8a" stroke-width="1" stroke-linecap="round" opacity=".4"/>
+        <path d="M14,40 Q18,38 22,41 Q26,44 30,42" stroke="#e8cc8a" stroke-width="1" stroke-linecap="round" opacity=".4"/>
+      </svg>
+      <div class="logo-text-wrap">
+        <span class="logo-main" id="logo-name">حلاقي</span>
+        <span class="logo-sub">SALON DE COIFFURE</span>
+      </div>
+    </div>
+    <div class="nav-actions">
+      <div id="status-badge"></div>
+      <div class="lang-btn">
+        <button class="lang-opt active" id="lbtn-ar" onclick="setLang('ar')">ع</button>
+        <button class="lang-opt" id="lbtn-fr" onclick="setLang('fr')">FR</button>
+      </div>
+      <button class="icon-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
+      <button class="icon-btn" onclick="goAdmin()">🔑</button>
+    </div>
+  </nav>
+
+  <div class="toast-wrap" id="toasts"></div>
+
+  <!-- HOME -->
+  <div class="screen active" id="screen-home">
+    <div id="home-stats"></div>
+    <div class="section-title"><span id="t-book-title">احجز مكانك</span></div>
+    <div class="card">
+      <div class="form-group">
+        <label class="form-label" id="t-name-lbl">الاسم *</label>
+        <input class="form-input" id="book-name" placeholder="أدخل اسمك">
+      </div>
+      <div class="form-group">
+        <label class="form-label" id="t-phone-lbl">رقم الهاتف (اختياري)</label>
+        <input class="form-input" id="book-phone" type="tel" placeholder="0xxx xxx xxx">
+      </div>
+      <div class="form-group">
+        <label class="form-label" id="t-svc-lbl">اختر الخدمة</label>
+        <div class="service-grid" id="service-options"></div>
+      </div>
+      <button class="btn btn-primary" onclick="bookAppointment()" id="book-btn">احجز الآن ✂️</button>
+    </div>
+    <div class="card" style="text-align:center">
+      <div class="section-title" style="justify-content:center" id="t-qr-title">امسح للحجز</div>
+      <div class="ornament">✦ ✦ ✦</div>
+      <div style="margin:14px auto;display:inline-block">
+        <div class="qr-box"><div id="qr-code"></div></div>
+      </div>
+      <p style="font-size:12px;color:var(--text2);margin-top:8px" id="t-qr-sub">شارك هذا الرمز مع زبائنك</p>
+    </div>
+  </div>
+
+  <!-- TICKET -->
+  <div class="screen" id="screen-ticket">
+    <div id="ticket-content"></div>
+  </div>
+
+  <!-- QUEUE -->
+  <div class="screen" id="screen-queue">
+    <div class="section-title">
+      <span id="t-queue-title">الطابور الحي</span>
+      <span id="queue-count-lbl" style="font-size:11px;color:var(--gold);letter-spacing:0;text-transform:none;font-weight:700"></span>
+    </div>
+    <div id="queue-list-view"></div>
+  </div>
+
+  <!-- ADMIN LOGIN -->
+  <div class="screen" id="screen-admin-login">
+    <div class="section-title"><span id="t-admin-access">دخول الإدارة</span></div>
+    <div class="card">
+      <div style="text-align:center;margin-bottom:20px">
+        <svg width="60" height="60" viewBox="0 0 48 48" fill="none">
+          <circle cx="24" cy="24" r="22" fill="#1a130a" stroke="#c9a84c" stroke-width="1.5"/>
+          <rect x="16" y="21" width="16" height="13" rx="3" fill="#c9a84c"/>
+          <path d="M18 21 V17 a6 6 0 0 1 12 0 V21" stroke="#c9a84c" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <circle cx="24" cy="27" r="2" fill="#0c0c0c"/>
+        </svg>
+      </div>
+      <div class="form-group">
+        <label class="form-label" id="t-pass-lbl">كلمة السر</label>
+        <input class="form-input" id="admin-pass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')adminLogin()">
+      </div>
+      <button class="btn btn-primary" onclick="adminLogin()" id="t-login-btn">دخول</button>
+      <p style="font-size:11px;color:var(--text3);margin-top:12px;text-align:center">admin123</p>
+    </div>
+  </div>
+
+  <!-- ADMIN DASHBOARD -->
+  <div class="screen" id="screen-admin">
+    <div id="admin-current"></div>
+    <div class="admin-grid" id="admin-controls"></div>
+    <div class="section-title">
+      <span id="t-waiting">في الانتظار</span>
+      <span id="admin-q-count" style="font-size:11px;color:var(--gold);letter-spacing:0;text-transform:none;font-weight:700"></span>
+    </div>
+    <div class="card" id="admin-queue-list"></div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:10px">
+      <button class="btn btn-outline" onclick="showScreen('admin-settings')" id="t-settings-btn">⚙️ الإعدادات</button>
+      <button class="btn btn-outline" onclick="adminLogout()" id="t-logout-btn">🚪 خروج</button>
+    </div>
+  </div>
+
+  <!-- ADMIN SETTINGS -->
+  <div class="screen" id="screen-admin-settings">
+    <div class="section-title"><span id="t-settings-title">الإعدادات</span></div>
+    <div class="card" id="settings-panel"></div>
+    <button class="btn btn-outline" style="margin-top:10px" onclick="showScreen('admin')">← <span id="t-back">رجوع</span></button>
+  </div>
+
+  <nav class="bottom-nav">
+    <button class="bnav-item active" id="bnav-home" onclick="navigateTo('home')">
+      <span class="bicon">🏠</span><span id="bn-home">الرئيسية</span>
+    </button>
+    <button class="bnav-item" id="bnav-ticket" onclick="navigateTo('ticket')">
+      <span class="bicon">🎫</span><span id="bn-ticket">تذكرتي</span>
+    </button>
+    <button class="bnav-item" id="bnav-queue" onclick="navigateTo('queue')">
+      <span class="bicon">👥</span><span id="bn-queue">الطابور</span>
+    </button>
+  </nav>
+</div>
+
+<div class="overlay hidden" id="modal-overlay" onclick="closeModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="mhandle"></div>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════
+// TRANSLATIONS
+// ════════════════════════════════════════
+const T = {
+  ar: {
+    logoName:'حلاقي', bookTitle:'احجز مكانك', nameLbl:'الاسم *',
+    namePh:'أدخل اسمك', phoneLbl:'رقم الهاتف (اختياري)', svcLbl:'اختر الخدمة',
+    bookBtn:'احجز الآن ✂️', qrTitle:'امسح للحجز', qrSub:'شارك هذا الرمز مع زبائنك',
+    queueTitle:'الطابور الحي', adminAccess:'دخول الإدارة', passLbl:'كلمة السر',
+    loginBtn:'دخول', waiting:'في الانتظار', settingsBtn:'⚙️ الإعدادات',
+    logoutBtn:'🚪 خروج', settingsTitle:'الإعدادات', back:'رجوع',
+    bnHome:'الرئيسية', bnTicket:'تذكرتي', bnQueue:'الطابور',
+    inQueue:'في الطابور', estWait:'وقت الانتظار', beforeYou:'قبلك', estMins:'دقيقة',
+    yourNum:'رقمك في الطابور', open:'مفتوح', closed:'مغلق',
+    startNext:'ابدأ التالي', finish:'انتهى', skip:'تخطي', pause:'إيقاف', openQ:'فتح',
+    currently:'يُخدَم الآن', noClient:'لا يوجد زبون حالياً', qEmpty:'الطابور فارغ 🎉',
+    noBooking:'لا يوجد حجز', goBook:'اذهب إلى الرئيسية للحجز',
+    done:'انتهت دورتك! شكراً 🎉', cash:'الدفع نقداً بعد الخدمة',
+    cancelBtn:'إلغاء الحجز', svcHaircut:'حلاقة', svcHB:'حلاقة + لحية',
+    svcBeard:'لحية فقط', maxBookings:'أقصى حجز لليوم', acceptBookings:'قبول الحجوزات',
+    clearAll:'مسح الكل', clearBtn:'مسح', darkMode:'الوضع الداكن',
+    booked:'محجوز اليوم', progress:'تقدم الطابور', min:'دق',
+    next:'التالي', heroTag:'حجز فوري — الدفع نقداً',
+    welcomeMsg:'أهلاً بك يا أستاذ 💈', wrongPass:'كلمة سر خاطئة',
+    closedMsg:'الحجز مغلق حالياً', maxMsg:'تم الوصول للحد الأقصى',
+    alreadyBooked:'لديك حجز بالفعل!', openMsg:'الحجز مفتوح', pauseMsg:'الحجز موقوف',
+    cancelledMsg:'تم الإلغاء', qClearedMsg:'تم مسح الطابور', finishMsg:'✂️ انتهى — أحسنت!',
+    yourTurn:'✂️ دورك الآن!', yourTurnBody:'توجه إلى الحلاق الآن',
+    one:'⚡ شخص واحد قبلك', oneBody:'استعد', three:'⏳ ثلاثة أشخاص قبلك', threeBody:'ابدأ التوجه',
+    noName:'أدخل اسمك', almostYour:'دورك قريب!', soon:'قريباً', dir:'rtl',
+  },
+  fr: {
+    logoName:'BarberQ', bookTitle:'Réserver votre place', nameLbl:'Votre nom *',
+    namePh:'Entrez votre nom', phoneLbl:'Téléphone (optionnel)', svcLbl:'Choisir le service',
+    bookBtn:'Réserver ✂️', qrTitle:'Scanner pour réserver', qrSub:'Partagez ce QR avec vos clients',
+    queueTitle:"File d'attente", adminAccess:'Accès administrateur', passLbl:'Mot de passe',
+    loginBtn:'Connexion', waiting:'En attente', settingsBtn:'⚙️ Paramètres',
+    logoutBtn:'🚪 Déconnexion', settingsTitle:'Paramètres', back:'Retour',
+    bnHome:'Accueil', bnTicket:'Mon ticket', bnQueue:'File',
+    inQueue:'En file', estWait:'Attente est.', beforeYou:'Avant vous', estMins:'min',
+    yourNum:'Votre numéro', open:'Ouvert', closed:'Fermé',
+    startNext:'Suivant', finish:'Terminé', skip:'Passer', pause:'Pause', openQ:'Ouvrir',
+    currently:'En cours', noClient:'Aucun client en cours', qEmpty:'File vide 🎉',
+    noBooking:'Aucune réservation', goBook:"Allez à l'accueil pour réserver",
+    done:"C'est fait! Merci 🎉", cash:'Paiement en espèces après le service',
+    cancelBtn:'Annuler ma réservation', svcHaircut:'Coupe de cheveux', svcHB:'Coupe + Barbe',
+    svcBeard:'Barbe seule', maxBookings:'Max réservations/jour', acceptBookings:'Accepter réservations',
+    clearAll:'Vider la file', clearBtn:'Vider', darkMode:'Mode sombre',
+    booked:"réservés aujourd'hui", progress:'Progression', min:'min',
+    next:'Suivant', heroTag:'Réservation instantanée — Espèces',
+    welcomeMsg:'Bienvenue, patron! 💈', wrongPass:'Mot de passe incorrect',
+    closedMsg:'Réservations fermées', maxMsg:'Maximum atteint',
+    alreadyBooked:'Vous avez déjà une réservation!', openMsg:'Réservations ouvertes', pauseMsg:'Réservations en pause',
+    cancelledMsg:'Réservation annulée', qClearedMsg:'File vidée', finishMsg:'✂️ Terminé!',
+    yourTurn:"✂️ C'est votre tour!", yourTurnBody:'Rendez-vous chez le coiffeur!',
+    one:'⚡ 1 personne avant vous', oneBody:'Préparez-vous!', three:'⏳ 3 personnes avant vous', threeBody:'Commencez à vous diriger',
+    noName:'Entrez votre nom', almostYour:'À vous bientôt!', soon:'Bientôt', dir:'ltr',
+  }
+};
+
+// ════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════
+let state = {
+  queue:[], currentClient:null, nextNumber:1, isOpen:true,
+  maxBookings:30, bookingsToday:0, theme:'dark', lang:'ar',
+  isAdmin:false, myTicketId:null, selectedService:'haircut',
+};
+
+function loadState() {
+  try { const s=localStorage.getItem('hallaqi_s'); if(s) state={...state,...JSON.parse(s)}; } catch(e){}
+}
+function saveState() {
+  try { localStorage.setItem('hallaqi_s',JSON.stringify(state)); } catch(e){}
+}
+function checkDailyReset() {
+  const today = new Date().toDateString();
+  if (localStorage.getItem('hallaqi_day')!==today) {
+    state.nextNumber=1; state.bookingsToday=0; state.queue=[];
+    state.currentClient=null; state.myTicketId=null;
+    localStorage.setItem('hallaqi_day',today); saveState();
+  }
+}
+function t(k){ return (T[state.lang]||T.ar)[k]||k; }
+
+// ════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════
+window.onload = function() {
+  loadState(); checkDailyReset();
+  applyTheme(); applyLang();
+  renderServices(); generateQR(); renderAll();
+  setupNotifications();
+  setInterval(renderAll, 6000);
+};
+
+// ════════════════════════════════════════
+// LANGUAGE
+// ════════════════════════════════════════
+function setLang(lang) {
+  state.lang=lang; saveState(); applyLang(); renderServices(); renderAll();
+}
+function applyLang() {
+  const lang=state.lang;
+  document.documentElement.setAttribute('lang',lang);
+  document.documentElement.setAttribute('dir',T[lang].dir);
+  document.getElementById('lbtn-ar').classList.toggle('active',lang==='ar');
+  document.getElementById('lbtn-fr').classList.toggle('active',lang==='fr');
+  const map={
+    'logo-name':'logoName','t-book-title':'bookTitle','t-name-lbl':'nameLbl',
+    't-phone-lbl':'phoneLbl','t-svc-lbl':'svcLbl','book-btn':'bookBtn',
+    't-qr-title':'qrTitle','t-qr-sub':'qrSub','t-queue-title':'queueTitle',
+    't-admin-access':'adminAccess','t-pass-lbl':'passLbl','t-login-btn':'loginBtn',
+    't-waiting':'waiting','t-settings-btn':'settingsBtn','t-logout-btn':'logoutBtn',
+    't-settings-title':'settingsTitle','t-back':'back',
+    'bn-home':'bnHome','bn-ticket':'bnTicket','bn-queue':'bnQueue',
+  };
+  for(const [id,k] of Object.entries(map)){
+    const el=document.getElementById(id); if(el) el.textContent=t(k);
+  }
+  const ni=document.getElementById('book-name'); if(ni) ni.placeholder=t('namePh');
+}
+
+// ════════════════════════════════════════
+// THEME
+// ════════════════════════════════════════
+function applyTheme() {
+  document.body.classList.toggle('light',state.theme==='light');
+  const btn=document.getElementById('theme-btn');
+  if(btn) btn.textContent=state.theme==='light'?'🌙':'☀️';
+}
+function toggleTheme() { state.theme=state.theme==='dark'?'light':'dark'; applyTheme(); saveState(); }
+
+// ════════════════════════════════════════
+// NAV
+// ════════════════════════════════════════
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const sc=document.getElementById('screen-'+name);
+  if(sc){sc.classList.remove('active');void sc.offsetWidth;sc.classList.add('active');}
+  document.querySelectorAll('.bnav-item').forEach(b=>b.classList.remove('active'));
+  const bn=document.getElementById('bnav-'+name); if(bn) bn.classList.add('active');
+  if(name==='ticket') renderTicket();
+  if(name==='queue') renderQueueView();
+  if(name==='admin') renderAdmin();
+  if(name==='admin-settings') renderSettings();
+}
+function navigateTo(name) {
+  if(name==='ticket'&&!state.myTicketId){toast(t('goBook'),'🎫');showScreen('home');return;}
+  showScreen(name);
+}
+function goAdmin() { state.isAdmin?showScreen('admin'):showScreen('admin-login'); }
+
+// ════════════════════════════════════════
+// SERVICES
+// ════════════════════════════════════════
+function getServices() {
+  return [
+    {id:'haircut',name:t('svcHaircut'),icon:'✂️',duration:20},
+    {id:'haircut_beard',name:t('svcHB'),icon:'💈',duration:30},
+    {id:'beard',name:t('svcBeard'),icon:'🪒',duration:10},
+  ];
+}
+function renderServices() {
+  const el=document.getElementById('service-options'); if(!el) return;
+  el.innerHTML=getServices().map(s=>`
+    <div class="service-option ${state.selectedService===s.id?'selected':''}" onclick="selectService('${s.id}')">
+      <span class="svc-icon">${s.icon}</span>
+      <div class="svc-body">
+        <div class="svc-name">${s.name}</div>
+        <div class="svc-dur">⏱ ${s.duration} ${t('min')}</div>
+      </div>
+      <div class="svc-check">${state.selectedService===s.id?'✓':''}</div>
+    </div>`).join('');
+}
+function selectService(id){ state.selectedService=id; renderServices(); }
+
+// ════════════════════════════════════════
+// BOOKING
+// ════════════════════════════════════════
+function bookAppointment() {
+  const name=document.getElementById('book-name').value.trim();
+  if(!name){toast(t('noName'),'⚠️');return;}
+  if(!state.isOpen){toast(t('closedMsg'),'🚫');return;}
+  if(state.bookingsToday>=state.maxBookings){toast(t('maxMsg'),'🚫');return;}
+  if(state.myTicketId){toast(t('alreadyBooked'),'🎫');showScreen('ticket');return;}
+  const svc=getServices().find(s=>s.id===state.selectedService);
+  const ticket={
+    id:Date.now().toString(), number:state.nextNumber++, name,
+    phone:document.getElementById('book-phone').value.trim(),
+    service:svc.id, serviceName:svc.name, serviceIcon:svc.icon,
+    duration:svc.duration, bookedAt:Date.now(), status:'waiting',
+  };
+  state.queue.push(ticket); state.myTicketId=ticket.id; state.bookingsToday++;
+  saveState();
+  document.getElementById('book-name').value=''; document.getElementById('book-phone').value='';
+  toast((state.lang==='ar'?`تم الحجز! رقمك ${ticket.number}`:`Réservé! Numéro: ${ticket.number}`),'✅');
+  renderAll(); showScreen('ticket');
+}
+
+// ════════════════════════════════════════
+// CANCEL
+// ════════════════════════════════════════
+function cancelMyAppointment() {
+  if(!state.myTicketId) return;
+  const idx=state.queue.findIndex(t=>t.id===state.myTicketId);
+  if(idx!==-1) state.queue.splice(idx,1);
+  state.myTicketId=null; saveState();
+  toast(t('cancelledMsg'),'✅'); renderAll(); showScreen('home');
+}
+
+// ════════════════════════════════════════
+// RENDER ALL
+// ════════════════════════════════════════
+function renderAll() {
+  renderHomeStats(); renderTicket(); renderQueueView();
+  if(state.isAdmin) renderAdmin(); updateStatusBadge();
+}
+function updateStatusBadge() {
+  const el=document.getElementById('status-badge'); if(!el) return;
+  el.innerHTML=state.isOpen
+    ?`<span class="badge badge-green"><span class="dot"></span>${t('open')}</span>`
+    :`<span class="badge badge-red"><span class="dot"></span>${t('closed')}</span>`;
+}
+
+// ════════════════════════════════════════
+// HOME STATS
+// ════════════════════════════════════════
+function renderHomeStats() {
+  const el=document.getElementById('home-stats'); if(!el) return;
+  const w=state.queue.filter(t=>t.status==='waiting');
+  const wm=w.reduce((s,t)=>s+t.duration,0);
+  el.innerHTML=`
+    <div class="hero-banner">
+      <div class="hero-inner">
+        <div class="hero-tag">${t('heroTag')}</div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="hero-stat-num">${w.length}</div>
+            <div class="hero-stat-lbl">${t('inQueue')}</div>
+          </div>
+          <div class="hero-divider"></div>
+          <div class="hero-stat">
+            <div class="hero-stat-num">${wm}</div>
+            <div class="hero-stat-lbl">${t('estWait')} (${t('min')})</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ════════════════════════════════════════
+// TICKET
+// ════════════════════════════════════════
+function renderTicket() {
+  const el=document.getElementById('ticket-content'); if(!el) return;
+  if(!state.myTicketId){
+    el.innerHTML=`<div class="empty"><div class="eicon">🎫</div><h3>${t('noBooking')}</h3><p>${t('goBook')}</p></div>`;
+    return;
+  }
+  const ticket=state.queue.find(x=>x.id===state.myTicketId);
+  if(!ticket){
+    el.innerHTML=`<div class="empty"><div class="eicon">✅</div><h3>${t('done')}</h3></div>`;
+    return;
+  }
+  const w=state.queue.filter(x=>x.status==='waiting');
+  const myPos=w.findIndex(x=>x.id===state.myTicketId);
+  const before=Math.max(0,myPos);
+  const waitMins=w.slice(0,myPos).reduce((s,x)=>s+x.duration,0);
+  const prog=Math.min(100,Math.max(0,100-(before/Math.max(w.length,1))*100));
+  let badge='';
+  if(before===0) badge=`<span class="badge badge-orange"><span class="dot"></span>${t('almostYour')}</span>`;
+  else if(before<=2) badge=`<span class="badge badge-blue"><span class="dot"></span>${t('soon')}</span>`;
+  else badge=`<span class="badge badge-gold"><span class="dot"></span>${t('waiting')}</span>`;
+
+  el.innerHTML=`
+    <div class="ticket-wrap">
+      <div class="ticket-top">
+        <div class="ticket-shop">${state.lang==='ar'?'✦ حلاقي ✦':'✦ BARBERQ ✦'}</div>
+        <div class="ticket-num-lbl">${t('yourNum')}</div>
+        <div class="ticket-num">${ticket.number}</div>
+        <div class="ticket-name">${ticket.name}</div>
+        <div class="ticket-svc">${ticket.serviceIcon} ${ticket.serviceName}</div>
+      </div>
+      <div class="ticket-bottom">
+        <div class="ticket-info">
+          <div class="ticket-info-num">${before}</div>
+          <div class="ticket-info-lbl">${t('beforeYou')}</div>
+        </div>
+        <div class="ticket-sep"></div>
+        <div class="ticket-info">
+          <div class="ticket-info-num">${waitMins}</div>
+          <div class="ticket-info-lbl">${t('estMins')}</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div style="font-size:12px;color:var(--text2)">${t('progress')}</div>
+        ${badge}
+      </div>
+      <div class="prog-wrap"><div class="prog-bar" style="width:${prog}%"></div></div>
+      <p style="font-size:12px;color:var(--text2);text-align:center;margin-top:14px">💵 ${t('cash')}</p>
+      <div style="margin-top:14px">
+        <button class="btn btn-danger" onclick="cancelMyAppointment()">${t('cancelBtn')}</button>
+      </div>
+    </div>`;
+  checkNotifications(before);
+}
+
+// ════════════════════════════════════════
+// QUEUE VIEW
+// ════════════════════════════════════════
+function renderQueueView() {
+  const el=document.getElementById('queue-list-view');
+  const lbl=document.getElementById('queue-count-lbl');
+  if(!el) return;
+  const w=state.queue.filter(x=>x.status==='waiting');
+  if(lbl) lbl.textContent=`${w.length} ${t('waiting')}`;
+  if(!w.length){
+    el.innerHTML=`<div class="empty"><div class="eicon">💈</div><h3>${t('qEmpty')}</h3></div>`;
+    return;
+  }
+  el.innerHTML=`<div class="card">${w.map((tk,i)=>`
+    <div class="q-item">
+      <div class="q-pos">${tk.number}</div>
+      <div class="q-info">
+        <div class="q-name">${tk.name}${tk.id===state.myTicketId?' 👤':''}</div>
+        <div class="q-svc">${tk.serviceIcon} ${tk.serviceName} · ${tk.duration} ${t('min')}</div>
+      </div>
+      <div>${i===0?`<span class="badge badge-green" style="font-size:10px">${t('next')}</span>`:`<span style="font-size:12px;color:var(--text2)">#${i+1}</span>`}</div>
+    </div>`).join('')}</div>`;
+}
+
+// ════════════════════════════════════════
+// ADMIN
+// ════════════════════════════════════════
+function adminLogin() {
+  if(document.getElementById('admin-pass').value==='admin123'){
+    state.isAdmin=true; document.getElementById('admin-pass').value='';
+    toast(t('welcomeMsg'),'✅'); showScreen('admin');
+  } else { toast(t('wrongPass'),'❌'); }
+}
+function adminLogout(){ state.isAdmin=false; showScreen('home'); }
+
+function renderAdmin() {
+  const w=state.queue.filter(x=>x.status==='waiting');
+  const cc=document.getElementById('admin-current');
+  if(cc){
+    if(state.currentClient){
+      cc.innerHTML=`<div class="current-box">
+        <div class="current-label"><span class="dot"></span>${t('currently')}</div>
+        <div class="current-name">${state.currentClient.name}</div>
+        <div class="current-svc">${state.currentClient.serviceIcon} ${state.currentClient.serviceName} · ${state.currentClient.duration} ${t('min')}</div>
+      </div>`;
+    } else {
+      cc.innerHTML=`<div class="card card-sm" style="text-align:center;color:var(--text2);margin-bottom:14px">
+        <span style="font-size:28px">💈</span><div style="font-size:14px;margin-top:6px">${t('noClient')}</div>
+      </div>`;
+    }
+  }
+  const ctrl=document.getElementById('admin-controls');
+  if(ctrl) ctrl.innerHTML=`
+    <button class="adm-btn adm-green" onclick="startNext()" ${!w.length?'disabled style="opacity:.35"':''}>
+      <span class="aico">▶️</span>${t('startNext')}
+    </button>
+    <button class="adm-btn adm-green" onclick="finishCurrent()" ${!state.currentClient?'disabled style="opacity:.35"':''}>
+      <span class="aico">✅</span>${t('finish')}
+    </button>
+    <button class="adm-btn adm-orange" onclick="skipFirst()" ${!w.length?'disabled style="opacity:.35"':''}>
+      <span class="aico">⏭️</span>${t('skip')}
+    </button>
+    <button class="adm-btn ${state.isOpen?'adm-red':'adm-gold'}" onclick="toggleOpen()">
+      <span class="aico">${state.isOpen?'🔒':'🔓'}</span>${state.isOpen?t('pause'):t('openQ')}
+    </button>`;
+  const qc=document.getElementById('admin-q-count');
+  if(qc) qc.textContent=`${w.length} ${t('waiting')}`;
+  const ql=document.getElementById('admin-queue-list');
+  if(!ql) return;
+  if(!w.length){
+    ql.innerHTML=`<div class="empty" style="padding:20px"><div class="eicon">🎉</div><p>${t('qEmpty')}</p></div>`;
+  } else {
+    ql.innerHTML=w.map(tk=>`
+      <div class="q-item">
+        <div class="q-pos">${tk.number}</div>
+        <div class="q-info">
+          <div class="q-name">${tk.name}</div>
+          <div class="q-svc">${tk.serviceName}${tk.phone?' · 📞'+tk.phone:''}</div>
+        </div>
+        <div class="q-actions">
+          <button class="qbtn qbtn-skip" onclick="skipClient('${tk.id}')" title="${t('skip')}">⏭</button>
+          <button class="qbtn qbtn-del" onclick="removeClient('${tk.id}')" title="✕">✕</button>
+        </div>
+      </div>`).join('');
+  }
+}
+
+function startNext(){
+  const w=state.queue.filter(x=>x.status==='waiting'); if(!w.length) return;
+  state.currentClient=w[0]; w[0].status='in_progress'; saveState();
+  toast(`▶️ ${w[0].name}`,'▶️'); renderAll();
+}
+function finishCurrent(){
+  if(!state.currentClient) return;
+  const idx=state.queue.findIndex(x=>x.id===state.currentClient.id);
+  if(idx!==-1) state.queue.splice(idx,1);
+  if(state.myTicketId===state.currentClient.id) state.myTicketId=null;
+  state.currentClient=null; saveState();
+  toast(t('finishMsg'),'✅'); renderAll();
+}
+function skipFirst(){
+  const w=state.queue.filter(x=>x.status==='waiting'); if(!w.length) return;
+  const idx=state.queue.findIndex(x=>x.id===w[0].id);
+  const [c]=state.queue.splice(idx,1); state.queue.push(c);
+  saveState(); toast(`⏭️ ${c.name}`,'⏭️'); renderAll();
+}
+function skipClient(id){
+  const idx=state.queue.findIndex(x=>x.id===id); if(idx===-1) return;
+  const [c]=state.queue.splice(idx,1); state.queue.push(c);
+  saveState(); renderAdmin();
+}
+function removeClient(id){
+  const idx=state.queue.findIndex(x=>x.id===id); if(idx===-1) return;
+  if(state.queue[idx].id===state.myTicketId) state.myTicketId=null;
+  const name=state.queue[idx].name; state.queue.splice(idx,1);
+  saveState(); toast(`🗑️ ${name}`,'🗑️'); renderAll();
+}
+function toggleOpen(){
+  state.isOpen=!state.isOpen; saveState();
+  toast(state.isOpen?t('openMsg'):t('pauseMsg'),state.isOpen?'🔓':'🔒'); renderAll();
+}
+
+// ════════════════════════════════════════
+// SETTINGS
+// ════════════════════════════════════════
+function renderSettings(){
+  const el=document.getElementById('settings-panel'); if(!el) return;
+  el.innerHTML=`
+    <div class="toggle-row">
+      <div>
+        <div style="font-weight:600;font-size:15px">${t('acceptBookings')}</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:2px">${state.isOpen?t('open'):t('closed')}</div>
+      </div>
+      <label class="tog"><input type="checkbox" ${state.isOpen?'checked':''} onchange="state.isOpen=this.checked;saveState();renderAll()"><div class="tog-track"></div><div class="tog-thumb"></div></label>
+    </div>
+    <div class="toggle-row">
+      <div>
+        <div style="font-weight:600;font-size:15px">${t('maxBookings')}</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:2px">${state.bookingsToday} ${t('booked')}</div>
+      </div>
+      <div class="num-row">
+        <button class="num-btn" onclick="adjMax(-1)">−</button>
+        <span class="num-val" id="max-disp">${state.maxBookings}</span>
+        <button class="num-btn" onclick="adjMax(1)">+</button>
+      </div>
+    </div>
+    <div class="toggle-row">
+      <div style="font-weight:600;font-size:15px">${t('darkMode')}</div>
+      <label class="tog"><input type="checkbox" ${state.theme==='dark'?'checked':''} onchange="state.theme=this.checked?'dark':'light';applyTheme();saveState()"><div class="tog-track"></div><div class="tog-thumb"></div></label>
+    </div>
+    <div class="toggle-row" style="border-bottom:none">
+      <div style="font-weight:600;font-size:15px">${t('clearAll')}</div>
+      <button class="btn btn-danger btn-sm" onclick="clearAll()">${t('clearBtn')}</button>
+    </div>`;
+}
+function adjMax(d){
+  state.maxBookings=Math.max(1,Math.min(100,state.maxBookings+d));
+  const el=document.getElementById('max-disp'); if(el) el.textContent=state.maxBookings;
+  saveState();
+}
+function clearAll(){
+  state.queue=[]; state.currentClient=null; state.myTicketId=null; saveState();
+  toast(t('qClearedMsg'),'🗑️'); renderAll();
+}
+
+// ════════════════════════════════════════
+// NOTIFICATIONS
+// ════════════════════════════════════════
+const notified={};
+function setupNotifications(){
+  if('Notification' in window && Notification.permission==='default') Notification.requestPermission();
+}
+function checkNotifications(before){
+  if(!state.myTicketId) return;
+  const k=state.myTicketId; if(!notified[k]) notified[k]={};
+  const msgs={
+    0:{title:t('yourTurn'),body:t('yourTurnBody')},
+    1:{title:t('one'),body:t('oneBody')},
+    3:{title:t('three'),body:t('threeBody')},
+  };
+  if(msgs[before]&&!notified[k][before]){
+    notified[k][before]=true;
+    if('Notification' in window && Notification.permission==='granted')
+      new Notification(msgs[before].title,{body:msgs[before].body,icon:'💈'});
+    toast(msgs[before].title,before===0?'✂️':before===1?'⚡':'⏳');
+  }
+}
+
+// ════════════════════════════════════════
+// QR CODE
+// ════════════════════════════════════════
+function generateQR(){
+  const el=document.getElementById('qr-code'); if(!el) return; el.innerHTML='';
+  try {
+    new QRCode(el,{text:window.location.href.split('?')[0],width:160,height:160,
+      colorDark:'#0c0c0c',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});
+  } catch(e){
+    el.innerHTML=`<div style="width:160px;height:160px;display:flex;align-items:center;justify-content:center;background:#fff;border-radius:8px;color:#333;font-size:11px;text-align:center;padding:10px">Partagez l'URL<br>شارك الرابط</div>`;
+  }
+}
+
+// ════════════════════════════════════════
+// TOAST
+// ════════════════════════════════════════
+function toast(msg,icon='ℹ️'){
+  const c=document.getElementById('toasts');
+  const el=document.createElement('div'); el.className='toast';
+  el.innerHTML=`<span style="font-size:18px">${icon}</span><span>${msg}</span>`;
+  c.appendChild(el);
+  setTimeout(()=>{el.classList.add('out');setTimeout(()=>el.remove(),300);},3500);
+}
+function closeModal(){ document.getElementById('modal-overlay').classList.add('hidden'); }
+
+// ════════════════════════════════════════
+// PWA
+// ════════════════════════════════════════
+if('serviceWorker' in navigator){
+  const sw=`const C='hallaqi-v2';self.addEventListener('install',e=>e.waitUntil(caches.open(C).then(c=>c.addAll(['/']))));self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));`;
+  navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:'application/javascript'}))).catch(()=>{});
+}
+</script>
+</body>
+</html>
